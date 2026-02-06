@@ -1,0 +1,36 @@
+- name: Production Deploy
+  hosts: prod
+  become: yes
+  gather_facts: no
+
+  vars:
+    release_dir: "/srv/prod-server/app/releases/{{ version }}"
+    current_link: /srv/prod-server/app/current
+
+  tasks:
+    - name: Create release dir
+      file:
+        path: "{{ release_dir }}"
+        state: directory
+        owner: produser
+        group: produser
+        mode: '0755'
+
+    - name: Upload artifact
+      copy:
+        # Runner上のパス
+        src: "../artifact.tar.gz"
+        dest: "/tmp/artifact-{{ version }}.tar.gz"
+
+    - name: Extract artifact
+      unarchive:
+        src: "/tmp/artifact-{{ version }}.tar.gz"
+        dest: "{{ release_dir }}"
+        remote_src: yes
+
+    - name: Switch current
+      file:
+        src: "{{ release_dir }}"
+        dest: "{{ current_link }}"
+        state: link
+        force: yes

@@ -1,0 +1,53 @@
+name: Tag Release Pipeline
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  tag-check:
+    runs-on: self-hosted
+
+    steps:
+      # GitHub からソースコードを取得
+      - name: Checkout source
+        uses: actions/checkout@v4
+        # 最新の 1 コミットだけを取得（パケット節約）
+        with:
+          fetch-depth: 1
+
+      # バージョン確認（Tag値取得）
+      - name: Show tag version
+        run: echo "Release tag = ${{ github.ref_name }}"
+
+      - name: Build artifact
+        run: |
+          tar -czf artifact.tar.gz app
+      
+      # artifact 内容確認（ログ出力）
+      - name: Check artifact content
+        run: tar -tf artifact.tar.gz
+
+      # SSH Agent 起動
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # known_hosts 登録（SSH 初回接続の接続確認を自動回避）
+      - name: Add known hosts
+        run: ssh-keyscan -H ${{ vars.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+
+      # Ansible Deploy 実行
+      - name: Run Ansible deploy
+        run: |
+          cd ansible
+          ansible-playbook -i hosts deploy.yml \
+          -e version=${{ github.ref_name }}
+
+      # Artifactのクリーンアップ
+      - name: Post-deploy cleanup
+        # 成功失敗に関わらず実行
+        if: always() 
+        run: rm -f artifact.tar.gz
