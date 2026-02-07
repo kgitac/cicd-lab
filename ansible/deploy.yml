@@ -9,6 +9,11 @@
 
   tasks:
     - block:
+        # - name: Ensure release directory is empty
+        #   file:
+        #     path: "{{ release_dir }}"
+        #     state: absent   
+
         - name: Create release dir
           file:
             path: "{{ release_dir }}"
