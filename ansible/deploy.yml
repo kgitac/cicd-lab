@@ -9,11 +9,6 @@
 
   tasks:
     - block:
-        # - name: Ensure release directory is empty
-        #   file:
-        #     path: "{{ release_dir }}"
-        #     state: absent   
-
         - name: Create release dir
           file:
             path: "{{ release_dir }}"
@@ -32,25 +27,42 @@
             src: "/tmp/artifact-{{ version }}.tar.gz"
             dest: "{{ release_dir }}"
             remote_src: yes
-
-        - name: Switch current
+        
+        # 現在のリンクをバックアップ（現在の正常な状態を保存）
+        # cp -P よりも、パスをテキストで保存する方が確実
+        - name: Backup current symlink
+          shell: |
+            if [ -L {{ current_link }} ]; then
+              readlink {{ current_link }} > /srv/prod-server/app/previous_release_path
+            fi
+          
+        # リンクの切り替え（ここで本番が新バージョンに変わる）
+        - name: Switch current symlink
           file:
             src: "{{ release_dir }}"
             dest: "{{ current_link }}"
             state: link
             force: yes
 
-        - name: Health check (Check if index.html exists)
+        # ヘルスチェック（新しくなった本番環境をチェック！）
+        - name: Health check (HTTP or Stat)
           stat:
             path: "{{ current_link }}/app/index.html"
           register: app_status
 
         - name: Validate app status
           fail:
-            msg: "Health check failed! index.html not found."
+            msg: "Health check failed!"
           when: not app_status.stat.exists
 
       rescue:
-        - name: ERROR - Deploy failed
-          debug:
-            msg: "デプロイに失敗しました。以前のバージョンが維持されています（または手動確認が必要です）"
+        # 失敗した場合、バックアップした古いパスにリンクを戻す
+        - name: Rollback to previous version
+          shell: |
+            if [ -f /srv/prod-server/app/previous_release_path ]; then
+              ln -sfn $(cat /srv/prod-server/app/previous_release_path) {{ current_link }}
+            fi
+
+        - name: Abort deployment
+          fail:
+            msg: "Deploy failed! Rollback executed."
