@@ -1,0 +1,27 @@
+- name: Create release directory
+  file:
+    path: "{{ release_dir }}"
+    state: directory
+    owner: produser
+    group: produser
+    mode: '0755'
+
+- name: Backup current symlink
+  shell: |
+    if [ -L {{ current_link }} ]; then
+      readlink {{ current_link }} > /srv/prod-server/app/previous_release_path
+    fi
+
+- name: Upload and Extract artifact
+  unarchive:
+    src: "../artifact.tar.gz"
+    dest: "{{ release_dir }}"
+    # ファイルはRunnerにある場合（copy不要）
+    remote_src: no
+
+- name: Switch current symlink
+  file:
+    src: "{{ release_dir }}"
+    dest: "{{ current_link }}"
+    state: link
+    force: yes

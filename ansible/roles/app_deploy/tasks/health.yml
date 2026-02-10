@@ -1,0 +1,9 @@
+- name: Health check (Check if index.html exists)
+  stat:
+    path: "{{ current_link }}/app/index.html"
+  register: app_status
+
+- name: Validate app status
+  fail:
+    msg: "Health check failed! index.html not found."
+  when: not app_status.stat.exists

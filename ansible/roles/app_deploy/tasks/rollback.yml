@@ -1,0 +1,20 @@
+- name: ERROR - Starting Rollback
+  debug:
+    msg: "デプロイ失敗。バックアップを使用してロールバックを開始します。"
+
+- name: Rollback current symlink to previous version
+  shell: |
+    if [ -f /srv/prod-server/app/previous_release_path ]; then
+      PREV_PATH=$(cat /srv/prod-server/app/previous_release_path)
+      ln -sfn $PREV_PATH {{ current_link }}
+    fi
+  args:
+    executable: /bin/bash
+
+- name: Confirm current symlink after rollback
+  shell: ls -l {{ current_link }}
+  register: rollback_result
+
+- name: Show rollback result
+  debug:
+    var: rollback_result.stdout

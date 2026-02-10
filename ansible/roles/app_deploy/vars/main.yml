@@ -1,0 +1,2 @@
+release_dir: "/srv/prod-server/app/releases/{{ version }}"
+current_link: "/srv/prod-server/app/current"
