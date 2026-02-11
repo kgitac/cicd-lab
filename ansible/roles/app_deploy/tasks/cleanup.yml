@@ -1,0 +1,12 @@
+- name: Get list of release directories
+  find:
+    paths: "/srv/prod-server/app/releases"
+    file_type: directory
+  register: all_releases
+
+- name: Remove old releases (keep latest 5)
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  # 日付順に並べて、最新の5つを除外したリストをループで削除
+  with_items: "{{ all_releases.files | sort(attribute='mtime', reverse=true) | selectattr('path', 'ne', release_dir) | batch(5) | list | last if all_releases.matched > 5 else [] }}"
