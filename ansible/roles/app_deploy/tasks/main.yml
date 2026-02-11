@@ -1,6 +1,7 @@
 - block:
     - include_tasks: setup.yml
     - include_tasks: health.yml
+    - include_tasks: cleanup.yml
   rescue:
     - include_tasks: rollback.yml
     - fail:

@@ -2,6 +2,13 @@
   debug:
     msg: "デプロイ失敗。バックアップを使用してロールバックを開始します。"
 
+# 失敗フォルダを調査用として残す
+# ディスク容量が少ない、テストが自動化されている場合に削除する
+# - name: Remove failed release directory
+#   file:
+#     path: "{{ release_dir }}"
+#     state: absent
+
 - name: Rollback current symlink to previous version
   shell: |
     if [ -f /srv/prod-server/app/previous_release_path ]; then
