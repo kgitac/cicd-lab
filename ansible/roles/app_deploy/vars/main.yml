@@ -1,2 +1,5 @@
-release_dir: "/srv/prod-server/app/releases/{{ version }}"
-current_link: "/srv/prod-server/app/current"
+# 固定パスではなく、hostsで定義した deploy_root を使う
+release_dir: "{{ deploy_root }}/releases/{{ version }}"
+current_link: "{{ deploy_root }}/current"
+# バックアップパスも各ホストのディレクトリ内に
+backup_path: "{{ deploy_root }}/previous_release_path"
