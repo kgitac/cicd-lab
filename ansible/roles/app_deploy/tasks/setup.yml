@@ -9,7 +9,7 @@
 - name: Backup current symlink
   shell: |
     if [ -L {{ current_link }} ]; then
-      readlink {{ current_link }} > /srv/prod-server/app/previous_release_path
+      readlink {{ current_link }} > {{ backup_path }}
     fi
 
 - name: Upload and Extract artifact

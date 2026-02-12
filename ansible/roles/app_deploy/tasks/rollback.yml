@@ -11,9 +11,9 @@
 
 - name: Rollback current symlink to previous version
   shell: |
-    if [ -f /srv/prod-server/app/previous_release_path ]; then
-      PREV_PATH=$(cat /srv/prod-server/app/previous_release_path)
-      ln -sfn $PREV_PATH {{ current_link }}
+    if [ -f {{ backup_path }} ]; then
+      PREV_PATH=$(cat "{{ backup_path }}")
+      ln -sfn "$PREV_PATH" "{{ current_link }}"
     fi
   args:
     executable: /bin/bash

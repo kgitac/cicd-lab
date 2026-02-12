@@ -1,6 +1,6 @@
 - name: Get list of release directories
   find:
-    paths: "/srv/prod-server/app/releases"
+    paths: "{{ deploy_root }}/releases"
     file_type: directory
   register: all_releases
 
