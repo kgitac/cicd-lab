@@ -2,8 +2,8 @@ name: Tag Release Pipeline
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main  # mainブランチにPush（マージ含む）されたら実行
 
 jobs:
   tag-check:
