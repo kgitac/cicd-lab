@@ -19,9 +19,11 @@ jobs:
         with:
           fetch-depth: 1
 
-      # バージョン確認（Tag値取得）
-      - name: Show tag version
-        run: echo "Release tag = ${{ github.ref_name }}"
+      # ブランチ名と日時（ログ出力）
+      - name: Show branch and deployment id
+        run: |
+          echo "Branch name = ${{ github.ref_name }}"
+          echo "Time = $(date +'%Y-%m-%d %H:%M')"
 
       - name: Build artifact
         run: |
@@ -44,9 +46,13 @@ jobs:
       # Ansible Deploy 実行
       - name: Run Ansible deploy
         run: |
+          # フォルダ名に使う日時を作成
+          DEPLOY_DATE=$(date +'%Y%m%d-%H%M')
+          # フォルダ名：main-20260215-2000 のようになる
+          VERSION_NAME="${{ github.ref_name }}-$DEPLOY_DATE"
+          
           cd ansible
-          ansible-playbook -i hosts deploy.yml \
-          -e version=${{ github.ref_name }}
+          ansible-playbook -i hosts deploy.yml -e version=$VERSION_NAME
 
       # Artifactのクリーンアップ
       - name: Post-deploy cleanup
