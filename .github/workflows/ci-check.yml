@@ -1,0 +1,22 @@
+name: Ansible Syntax Check (CI)
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        # 最新の 1 コミットだけを取得（パケット節約）
+        with:
+          fetch-depth: 1
+
+      - name: Ansible Syntax Check
+        run: |
+          cd ansible
+          # インベントリとPlaybookを指定して文法をチェック
+          ansible-playbook --syntax-check -i hosts deploy.yml
