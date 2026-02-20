@@ -2,5 +2,4 @@
 ansible_python_interpreter=/usr/bin/python3
 
 [prod]
-prod-01 ansible_host=localhost ansible_user=produser deploy_root=/srv/prod-server/app
-prod-02 ansible_host=localhost ansible_user=produser deploy_root=/srv/prod-server-02/app
+prodserver ansible_host=localhost ansible_user=produser deploy_root=/var/www/html

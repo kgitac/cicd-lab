@@ -1,7 +1,6 @@
 - name: Production Deploy
   hosts: prod
   become: yes
-  # 複数台デプロイ時に、1台ずつ順番に実行
-  serial: 1
   roles:
-    - role: app_deploy
+    - webserver   # 1. まずWebサーバーを建てる
+    - app_deploy  # 2. 次にアプリを配る
