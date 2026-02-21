@@ -1,0 +1,25 @@
+- name: Install Apache2 package
+  apt:
+    name: apache2
+    state: present
+    update_cache: yes  # インストール前に 'apt update' を実行する
+
+- name: Ensure Apache2 is running and enabled
+  service:
+    name: apache2
+    state: started     # Apacheを起動する
+    enabled: yes       # サーバー再起動時も自動でApacheが立ち上がるようにする
+
+- name: Set permissions for Web directory
+  file:
+    path: /var/www/html
+    state: directory
+    owner: produser    # Ansibleの実行ユーザーが書き込めるように所有者を変える
+    group: produser
+    mode: '0755'
+
+- name: Apache config deploy
+  template:
+    src: apache.conf.j2
+    dest: /etc/apache2/sites-available/000-default.conf
+  notify: restart apache
