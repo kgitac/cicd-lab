@@ -9,7 +9,7 @@ jobs:
   tag-check:
     runs-on: self-hosted
     # Approval Gate（承認ゲート） リポジトリをPublicにする必要があります。
-    environment: production
+    # environment: production
 
     steps:
       # GitHub からソースコードを取得
