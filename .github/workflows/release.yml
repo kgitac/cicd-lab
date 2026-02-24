@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main  # mainブランチにPush（マージ含む）されたら実行
+    paths-ignore:
+      - 'ansible/reset-server.yml'  # 削除用Playbook
+      - 'ansible/roles/webserver/tasks/uninstall.yml' # 削除用タスク
 
 jobs:
   tag-check:

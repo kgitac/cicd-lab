@@ -1,0 +1,19 @@
+name: System Cleanup
+
+on:
+  workflow_dispatch: # 手動実行
+
+jobs:
+  cleanup:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        # 最新の 1 コミットだけを取得（パケット節約）
+        with:
+          fetch-depth: 1
+
+      - name: Run Reset Playbook
+        run: |
+          cd ansible
+          ansible-playbook -i hosts reset-server.yml
