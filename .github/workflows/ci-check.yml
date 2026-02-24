@@ -18,5 +18,5 @@ jobs:
       - name: Ansible Syntax Check
         run: |
           cd ansible
-          # インベントリとPlaybookを指定して文法をチェック
-          ansible-playbook --syntax-check -i hosts deploy.yml
+          # 全ての .yml ファイルをチェック対象にする
+          ansible-playbook --syntax-check -i hosts *.yml

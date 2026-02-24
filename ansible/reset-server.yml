@@ -1,0 +1,8 @@
+- name: Reset Web Server Environment
+  hosts: prod
+  become: yes
+  tasks:
+    - name: Execute webserver uninstallation
+      include_role:
+        name: webserver
+        tasks_from: uninstall.yml
