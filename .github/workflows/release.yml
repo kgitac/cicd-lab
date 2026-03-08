@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main  # mainブランチにPush（マージ含む）されたら実行
-    paths-ignore:
-      - 'ansible/reset-server.yml'  # 削除用Playbook
-      - 'ansible/roles/webserver/tasks/uninstall.yml' # 削除用タスク
 
 jobs:
   tag-check:
@@ -28,14 +25,6 @@ jobs:
           echo "Branch name = ${{ github.ref_name }}"
           echo "Time = $(date +'%Y-%m-%d %H:%M')"
 
-      - name: Build artifact
-        run: |
-          tar -czf artifact.tar.gz app
-      
-      # artifact 内容確認（ログ出力）
-      - name: Check artifact content
-        run: tar -tf artifact.tar.gz
-
       # SSH Agent 起動
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
@@ -46,19 +35,8 @@ jobs:
       - name: Add known hosts
         run: ssh-keyscan -H ${{ vars.DEPLOY_HOST }} >> ~/.ssh/known_hosts
 
-      # Ansible Deploy 実行
-      - name: Run Ansible deploy
+      - name: Run Server Spec Collection
         run: |
-          # フォルダ名に使う日時を作成
-          DEPLOY_DATE=$(date +'%Y%m%d-%H%M')
-          # フォルダ名：main-20260215-2000 のようになる
-          VERSION_NAME="${{ github.ref_name }}-$DEPLOY_DATE"
-          
           cd ansible
-          ansible-playbook -i hosts deploy.yml -e version=$VERSION_NAME
-
-      # Artifactのクリーンアップ
-      - name: Post-deploy cleanup
-        # 成功失敗に関わらず実行
-        if: always() 
-        run: rm -f artifact.tar.gz
+          # get_spec.yml を実行
+          ansible-playbook -i hosts get_spec.yml

@@ -1,0 +1,13 @@
+- name: Collect Server Spec
+  hosts: localhost
+  connection: local
+  gather_facts: yes  # サーバー情報を集めるフラグ
+  tasks:
+    - name: サーバー情報を取得してファイルに保存
+      ansible.builtin.copy:
+        content: |
+          最終更新日時: {{ ansible_facts['date_time']['year'] }}/{{ ansible_facts['date_time']['month'] }}/{{ ansible_facts['date_time']['day'] }} {{ ansible_facts['date_time']['hour'] }}:{{ ansible_facts['date_time']['minute'] }} (UTC)
+          ホスト名: {{ ansible_facts['hostname'] }}
+          OS情報: {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}
+          ディスク残量: {{ ansible_facts['mounts'][0]['size_available'] | human_readable }}
+        dest: "../docs/server_spec.txt"
