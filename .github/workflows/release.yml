@@ -40,3 +40,14 @@ jobs:
           cd ansible
           # get_spec.yml を実行
           ansible-playbook -i hosts get_spec.yml
+
+      - name: Upload Server Spec as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          # ダウンロード時のファイル名（任意）
+          name: server-spec-report
+          # 保存したいファイルのパス
+          path: docs/server_spec.txt
+          # 保存期間（実務では容量節約のため短めに設定）
+          retention-days: 5
+
