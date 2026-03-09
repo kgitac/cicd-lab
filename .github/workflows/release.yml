@@ -41,13 +41,30 @@ jobs:
           # get_spec.yml を実行
           ansible-playbook -i hosts get_spec.yml
 
-      - name: Upload Server Spec as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          # ダウンロード時のファイル名（任意）
-          name: server-spec-report
-          # 保存したいファイルのパス
-          path: docs/server_spec.txt
-          # 保存期間（実務では容量節約のため短めに設定）
-          retention-days: 5
+      # - name: Upload Server Spec as Artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     # ダウンロード時のファイル名（任意）
+      #     name: server-spec-report
+      #     # 保存したいファイルのパス
+      #     path: docs/server_spec.txt
+      #     # 保存期間（実務では容量節約のため短めに設定）
+      #     retention-days: 5
+
+      - name: Commit and Push server spec
+        run: |
+          # 1. Gitのユーザー設定（Actions公式のBot名を使う）
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          # 2. 変更があるか確認してからコミット
+          git add docs/server_spec.txt
+          
+          # 差分がある場合のみコミット（差分がないとエラーになるのを防ぐ）
+          if ! git diff --cached --exit-code --quiet; then
+            git commit -m "docs: update server spec [skip ci]"
+            git push
+          else
+            echo "No changes in server spec. Skipping commit."
+          fi      
 
