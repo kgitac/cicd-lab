@@ -1,0 +1,30 @@
+- name: Security Port Check
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: 1. リッスン状態のTCPポートを取得
+      # ssコマンドで数値表示(-n)、リスニング(-l)、TCP(-t)、プロセス名(-p)を取得
+      ansible.builtin.shell: "ss -ltn | grep LISTEN"
+      register: port_status
+
+    - name: 2. セキュリティレポートの生成
+      ansible.builtin.copy:
+        content: |
+          セキュリティ診断レポート
+          診断日時: {{ ansible_facts['date_time']['year'] }}/{{ ansible_facts['date_time']['month'] }}/{{ ansible_facts['date_time']['day'] }} {{ ansible_facts['date_time']['hour'] }}:{{ ansible_facts['date_time']['minute'] }} (UTC)
+          ホスト名: {{ ansible_facts['hostname'] }}
+          
+          [オープンポート一覧]
+          {{ port_status.stdout }}
+          
+          [判定基準]
+          - 22 (SSH): 許可
+          - その他: 要確認
+          
+          [診断結果]
+          {% if '0.0.0.0:80' in port_status.stdout or ':::80' in port_status.stdout %}
+          WARNING: HTTP(80) port is open. (Apache cleanup check)
+          {% else %}
+          PASS: No unexpected web ports detected.
+          {% endif %}
+        dest: "../docs/security_report.txt"
