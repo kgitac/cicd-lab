@@ -35,24 +35,19 @@ jobs:
       - name: Add known hosts
         run: ssh-keyscan -H ${{ vars.DEPLOY_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Run Security and Spec Collection
+      - name: Run Security Check
         run: |
           cd ansible
-          ansible-playbook -i hosts get_spec.yml
           ansible-playbook -i hosts security_check.yml
+          
+          # Ansibleが作ったレポートをGitHubのサマリー（トップ画面）に書き出す
+          echo "### Security Scan Results" >> $GITHUB_STEP_SUMMARY
+          cat docs/security_report.txt >> $GITHUB_STEP_SUMMARY
 
-      - name: Commit and Push reports
+      - name: Alert if vulnerability found
+        # もしレポート内に WARNING という文字があれば、GitHubのログに警告を出す
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          
-          # docs配下の全ファイルを対象にする
-          git add docs/*.txt
-          
-          if ! git diff --cached --exit-code --quiet; then
-            git commit -m "docs: auto-update server reports [skip ci]"
-            git push
-          else
-            echo "No changes in reports. Skipping commit."
-          fi  
+          if grep -q "WARNING" docs/security_report.txt; then
+            echo "::warning title=Security Alert::Unexpected port 80 is OPEN!"
+          fi
 
