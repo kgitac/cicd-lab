@@ -42,12 +42,12 @@ jobs:
           
           # Ansibleが作ったレポートをGitHubのサマリー（トップ画面）に書き出す
           echo "### Security Scan Results" >> $GITHUB_STEP_SUMMARY
-          cat docs/security_report.txt >> $GITHUB_STEP_SUMMARY
+          cat ../docs/security_report.txt >> $GITHUB_STEP_SUMMARY
 
       - name: Alert if vulnerability found
         # もしレポート内に WARNING という文字があれば、GitHubのログに警告を出す
         run: |
-          if grep -q "WARNING" docs/security_report.txt; then
+          if grep -q "WARNING" ../docs/security_report.txt; then
             echo "::warning title=Security Alert::Unexpected port 80 is OPEN!"
           fi
 
