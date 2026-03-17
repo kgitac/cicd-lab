@@ -37,13 +37,13 @@ jobs:
 
       # 実行ユーザーの表示
       - name: Check Runtime Environment
-          run: |
-            echo "=== Runtime User ==="
-            whoami
-            echo "=== Working Directory ==="
-            pwd
-            echo "=== Groups ==="
-            groups
+        run: |
+          echo "=== Runtime User ==="
+          whoami
+          echo "=== Working Directory ==="
+          pwd
+          echo "=== Groups ==="
+          groups
 
       - name: Run All Monitoring Tasks
         run: |
