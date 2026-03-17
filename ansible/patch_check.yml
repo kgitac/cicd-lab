@@ -1,0 +1,44 @@
+- name: OS Patch Status Check
+  hosts: localhost
+  connection: local
+  become: yes  # 全てのタスクを sudo 権限で実行する
+  tasks:
+    - name: 1. パッケージ情報の更新 (apt update)
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: 2. 更新可能なパッケージ一覧を取得
+      # --upgradable で更新があるパッケージのみ抽出
+      ansible.builtin.shell: "apt list --upgradable 2>/dev/null | grep -v 'Listing...'"
+      register: upgrade_list
+      changed_when: false
+      failed_when: false
+
+    - name: 3. セキュリティアップデートの有無を確認
+      ansible.builtin.shell: "apt list --upgradable 2>/dev/null | grep -i security | wc -l"
+      register: security_patch_count
+      changed_when: false
+
+    - name: 4. OSパッチ適用状況レポートの生成
+      ansible.builtin.copy:
+        content: |
+          # OSパッチ適用状況レポート
+          - 診断日時: {{ ansible_facts['date_time']['year'] }}/{{ ansible_facts['date_time']['month'] }}/{{ ansible_facts['date_time']['day'] }} {{ ansible_facts['date_time']['hour'] }}:{{ ansible_facts['date_time']['minute'] }} (UTC)
+          - ホスト名: {{ ansible_facts['hostname'] }}
+          
+          ## サマリー
+          - 更新可能な全パッケージ数: {{ upgrade_list.stdout_lines | length }}
+          - うち、セキュリティ更新数: {{ security_patch_count.stdout }}
+          
+          ## 判定
+          {% if security_patch_count.stdout | int > 0 %}
+          ⚠️ WARNING: セキュリティアップデートが未適用です。早急な更新を推奨します。
+          {% elif upgrade_list.stdout_lines | length > 0 %}
+          ℹ️ NOTICE: いくつかのパッケージに更新があります。
+          {% else %}
+          ✅ PASS: OSは最新の状態です。
+          {% endif %}
+          
+          ## 更新対象一覧（抜粋）
+          {{ upgrade_list.stdout | truncate(1000) }}
+        dest: "../docs/patch_report.txt"

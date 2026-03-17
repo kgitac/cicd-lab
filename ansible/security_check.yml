@@ -13,9 +13,9 @@
     - name: 3. セキュリティレポートの生成
       ansible.builtin.copy:
         content: |
-          セキュリティ診断レポート
-          診断日時: {{ ansible_facts['date_time']['year'] }}/{{ ansible_facts['date_time']['month'] }}/{{ ansible_facts['date_time']['day'] }} {{ ansible_facts['date_time']['hour'] }}:{{ ansible_facts['date_time']['minute'] }} (UTC)
-          ホスト名: {{ ansible_facts['hostname'] }}
+          # セキュリティ診断レポート
+          - 診断日時: {{ ansible_facts['date_time']['year'] }}/{{ ansible_facts['date_time']['month'] }}/{{ ansible_facts['date_time']['day'] }} {{ ansible_facts['date_time']['hour'] }}:{{ ansible_facts['date_time']['minute'] }} (UTC)
+          - ホスト名: {{ ansible_facts['hostname'] }}
           - 結果: {{ '⚠️ WARNING' if security_alert else '✅ PASS' }}
           
           ## 詳細

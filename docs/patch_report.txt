@@ -1,0 +1,23 @@
+# OSパッチ適用状況レポート
+- 診断日時: 2026/03/17 19:34 (UTC)
+- ホスト名: ubuntu-server
+
+## サマリー
+- 更新可能な全パッケージ数: 17
+- うち、セキュリティ更新数: 6
+
+## 判定
+⚠️ WARNING: セキュリティアップデートが未適用です。早急な更新を推奨します。
+
+## 更新対象一覧（抜粋）
+containerd.io/noble 2.2.2-1~ubuntu.24.04~noble amd64 [upgradable from: 2.2.1-1~ubuntu.24.04~noble]
+docker-ce-cli/noble 5:29.3.0-1~ubuntu.24.04~noble amd64 [upgradable from: 5:29.2.1-1~ubuntu.24.04~noble]
+docker-ce-rootless-extras/noble 5:29.3.0-1~ubuntu.24.04~noble amd64 [upgradable from: 5:29.2.1-1~ubuntu.24.04~noble]
+docker-ce/noble 5:29.3.0-1~ubuntu.24.04~noble amd64 [upgradable from: 5:29.2.1-1~ubuntu.24.04~noble]
+libnftables1/noble-updates 1.0.9-1ubuntu0.1 amd64 [upgradable from: 1.0.9-1build1]
+linux-base/noble-updates 4.5ubuntu9+24.04.2 all [upgradable from: 4.5ubuntu9+24.04.1]
+nftables/noble-updates 1.0.9-1ubuntu0.1 amd64 [upgradable from: 1.0.9-1build1]
+python3-cryptography/noble-updates,noble-security 41.0.7-4ubuntu0.4 amd64 [upgradable from: 41.0.7-4ubuntu0.3]
+python3-software-properties/noble-updates 0.99.49.4 all [upgradable from: 0.99.49.3]
+software-properties-common/noble-updates 0.99.49.4 all [upgradable from: 0.99.49.3]
+sosreport/noble-updates...
