@@ -3,7 +3,9 @@ name: Tag Release Pipeline
 on:
   push:
     branches:
-      - main  # mainブランチにPush（マージ含む）されたら実行
+      - main  # mainにPush（マージ含む）されたら実行
+      - feat/test-workflow  # PR不要でワークフローが自動実行
+  workflow_dispatch:  # 手動実行
 
 jobs:
   tag-check:
