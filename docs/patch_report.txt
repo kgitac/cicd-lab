@@ -1,13 +1,13 @@
 # OSパッチ適用状況レポート
-- 診断日時: 2026/03/19 21:19 (UTC)
+- 診断日時: 2026/03/20 20:09 (UTC)
 - ホスト名: ubuntu-server
 
 ## サマリー
 - 更新可能な全パッケージ数: 21
-- うち、セキュリティ更新数: 1
+- うち、セキュリティ更新数: 0
 
 ## 判定
-⚠️ WARNING: セキュリティアップデートが未適用です。早急な更新を推奨します。
+ℹ️ NOTICE: いくつかのパッケージに更新があります。
 
 ## 更新対象一覧（抜粋）
 binutils-common/noble-updates 2.42-4ubuntu2.10 amd64 [upgradable from: 2.42-4ubuntu2.8]
@@ -18,6 +18,6 @@ coreutils/noble-updates 9.4-3ubuntu6.2 amd64 [upgradable from: 9.4-3ubuntu6.1]
 docker-ce-cli/noble 5:29.3.0-1~ubuntu.24.04~noble amd64 [upgradable from: 5:29.2.1-1~ubuntu.24.04~noble]
 docker-ce-rootless-extras/noble 5:29.3.0-1~ubuntu.24.04~noble amd64 [upgradable from: 5:29.2.1-1~ubuntu.24.04~noble]
 docker-ce/noble 5:29.3.0-1~ubuntu.24.04~noble amd64 [upgradable from: 5:29.2.1-1~ubuntu.24.04~noble]
+docker-compose-plugin/noble 5.1.1-1~ubuntu.24.04~noble amd64 [upgradable from: 5.1.0-1~ubuntu.24.04~noble]
 libbinutils/noble-updates 2.42-4ubuntu2.10 amd64 [upgradable from: 2.42-4ubuntu2.8]
-libctf-nobfd0/noble-updates 2.42-4ubuntu2.10 amd64 [upgradable from: 2.42-4ubuntu2.8]
-libctf0/noble-updates 2.42-4ubuntu2.10 amd64 [upgradable...
+libctf-nobfd0/noble-updates...
